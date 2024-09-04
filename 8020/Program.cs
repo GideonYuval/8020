@@ -100,11 +100,16 @@ namespace _8020
     {
         private string title;
 
+        //this is added only at the end of the question.
+        private Employee[] managed; 
+        private const int maxManaged = 10;
+
         public Manager() { }
 
         public Manager(string name, DateTime startDate, int salary, string title) : base(name, startDate, salary) //explicitly
         {
             this.title = title;
+            managed = new Employee[maxManaged]; //this is added only at the end of the question.
 
         }
 
