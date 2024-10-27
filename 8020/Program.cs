@@ -75,11 +75,7 @@ namespace _8020
 
         public Employee(string name) : this(name, DateTime.Now, defaultSalary) { }
 
-        public override string ToString()
-        {
-            //return base.ToString();
-            return $"{this.name} earns {this.salary} Shekels, started on {this.startDate}. Bonus = {this.Bonus()}, vacation = {this.Vacation()}";
-        }
+
 
         public virtual int Bonus()
         {
@@ -91,6 +87,12 @@ namespace _8020
         public int Vacation(int mult = 1)
         {
             return (DateTime.Now.Year - this.startDate.Year) * mult;
+        }
+
+        public override string ToString()
+        {
+            //return base.ToString();
+            return $"{this.name} earns {this.salary} Shekels, started on {this.startDate}. Bonus = {this.Bonus()}, vacation = {this.Vacation()}";
         }
 
     }
@@ -119,16 +121,16 @@ namespace _8020
         }
 
         public Manager(int salary) //the parameterless constructor is called implicitly
+        //this is equivilant to public Manager(int salary) : base()
         {
             this.title = "Boss";
             this.salary = salary;
         }
 
-
         public override string ToString()
         {
             //return base.ToString();
-            return base.ToString() + $", Title = {this.title}, Vacation = {base.Vacation(2)}";
+            return base.ToString() + $", Title = {this.title}, Vacation = {Vacation(2)}";
         }
 
 
