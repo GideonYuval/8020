@@ -208,18 +208,14 @@ namespace _8020
     class Company
     {
         string name; //company name
-        CEO c;
         Employee[] employees;
-        Manager[] managers;
-        Guard[] guards;
 
-        public Company(string name, CEO c, int maxEmployees)
+
+        public Company(string name, CEO ceo, int maxEmployees)
         {
             this.name = name;
-            this.c = c;
             Employee[] employees = new Employee[maxEmployees];
-            Manager[] managers = new Manager[maxEmployees];
-            Guard[] guards = new Guard[maxEmployees];
+
         }
 
     }
