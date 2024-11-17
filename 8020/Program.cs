@@ -120,7 +120,8 @@ namespace _8020
             this.title = "Big Boss";
         }
 
-        public Manager(int salary) //the parameterless constructor is called implicitly
+        public Manager(int salary) 
+        //the parameterless Base (Employee) constructor is called implicitly (in our case, the parameterless ctor chain another ctor)
         //this is equivilant to public Manager(int salary) : base()
         {
             this.title = "Boss";
@@ -136,7 +137,9 @@ namespace _8020
 
         public override int Bonus()
         {
-            return (base.Bonus() * 3);
+            //base.Bonus() calls the Employee Bonus
+            //without "base", we'd just call Manager.Bonus() recursively
+            return (base.Bonus() * 3); 
         }
     }
 
