@@ -43,6 +43,8 @@ namespace _8020
             // Default CEO
             CEO c2 = new CEO();
             Console.WriteLine(c2); // Outputs: Unknown CEO earns 50000 Shekels, started on (current date). Bonus = (depends on current year) + Stock Options = 10000
+
+            Company com1 = new Company("Intel", c1, 1000);
         }
     }
 
@@ -207,14 +209,16 @@ namespace _8020
 
     class Company
     {
-        string name; //company name
-        Employee[] employees;
+        private string name; //company name
+        private Employee[] employees;
+        private CEO c;
 
 
         public Company(string name, CEO ceo, int maxEmployees)
         {
             this.name = name;
-            Employee[] employees = new Employee[maxEmployees];
+            this.c = ceo;
+            this.employees = new Employee[maxEmployees];
 
         }
 
