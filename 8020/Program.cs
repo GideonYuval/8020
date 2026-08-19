@@ -22,29 +22,29 @@ namespace _8020
             Console.WriteLine(e1);
             Employee e2 = new Employee("Amit");
             Console.WriteLine(e2);
+            Console.WriteLine(Employee.GetNumEmployees());
 
             Manager m1 = new Manager("Gil", new DateTime(2018, 6, 6), 20000, "HW manager");
-            Manager m2 = new Manager("Yossi");
-
             Console.WriteLine(m1);
+
+            Manager m2 = new Manager("Yossi", "SW manager");
             Console.WriteLine(m2);
 
-            Manager m3 = new Manager(30000);
-            Manager m4 = new Manager();
+            Manager m3 = new Manager("Big Boss");
+            Console.WriteLine(m3);
+            m1.Raise(2000, "Good work");
 
-            Guard g1 = new Guard("John", new DateTime(2020, 8, 1), 3000, "Night");
-            Console.WriteLine(g1);
-            Guard g2 = new Guard("Tim", "Day");
-            Console.WriteLine(g2);
+            e1.Work();
+            //e1.Work("Secret"); //Employee doesn't have this
+            m1.Work();
+            m1.Work("Secret");
+            m1.Quiz();
 
-            CEO c1 = new CEO("Alice", new DateTime(2010, 1, 1), 100000, "Chief Executive Officer", 5000);
-            Console.WriteLine(c1); // Outputs: Alice earns 100000 Shekels, started on 01/01/2010. Bonus = 50000, Title = Chief Executive Officer, Vacation = 30, Stock Options = 5000
+            Company c1 = new Company("Intel", 100);
+            Company c2 = new Company("Microsoft", 50);
 
-            // Default CEO
-            CEO c2 = new CEO();
-            Console.WriteLine(c2); // Outputs: Unknown CEO earns 50000 Shekels, started on (current date). Bonus = (depends on current year) + Stock Options = 10000
-
-            Company com1 = new Company("Intel", c1, 1000);
+            c1.AddEmployee(e1);
+            c2.AddEmployee(e2);
         }
     }
 
@@ -53,12 +53,12 @@ namespace _8020
     //inheritance 
     public class Employee
     {
+        //the following attributes start off as private. We change them to protected only when we add the Manager class
         protected string name;
         protected int salary;
-        protected DateTime startDate;
-        protected const int defaultSalary = 10000;
-
-        protected static int numEmployees = 0;
+        private DateTime startDate;
+        private const int defaultSalary = 10000;
+        private static int numEmployees = 0;
 
 
 
@@ -84,17 +84,18 @@ namespace _8020
             return (DateTime.Now.Year - this.startDate.Year) * 1000;
         }
 
-        //all employees get vacation based on # of years worked, multiplied by mult (depends on type of employee)
-        //default is 1
-        public int Vacation(int mult = 1)
-        {
-            return (DateTime.Now.Year - this.startDate.Year) * mult;
-        }
 
         public override string ToString()
         {
             //return base.ToString();
-            return $"{this.name} earns {this.salary} Shekels, started on {this.startDate}. Bonus = {this.Bonus()}, vacation = {this.Vacation()}";
+            return $"{this.name} earns {this.salary} Shekels, started on {this.startDate}. Bonus = {this.Bonus()}";
+        }
+
+        public static int GetNumEmployees() { return numEmployees; }
+
+        public void Work()
+        {
+            Console.WriteLine($"{name} is working on general tasks.");
         }
 
     }
@@ -108,8 +109,6 @@ namespace _8020
         private Employee[] managed; 
         private const int maxManaged = 10;
 
-        public Manager() { }
-
         public Manager(string name, DateTime startDate, int salary, string title) : base(name, startDate, salary) //explicitly
         {
             this.title = title;
@@ -117,109 +116,84 @@ namespace _8020
 
         }
 
-        public Manager(string name) : base(name)
+        public Manager(string name, string title) : base(name)
         {
-            this.title = "Big Boss";
+            this.title = title;
         }
 
-        public Manager(int salary) 
+        public Manager(string title)
         //the parameterless Base (Employee) constructor is called implicitly (in our case, the parameterless ctor chain another ctor)
-        //this is equivilant to public Manager(int salary) : base()
+        //this is equivilant to public Manager(string name) : base()
         {
-            this.title = "Boss";
-            this.salary = salary;
+            this.title = title;
         }
 
-        public override string ToString()
+        
+        public void Raise(int raise)
         {
-            //return base.ToString();
-            return base.ToString() + $", Title = {this.title}, Vacation = {Vacation(2)}";
+            salary += raise; //requires salary to be protected, not private
         }
-
 
         public override int Bonus()
         {
             //base.Bonus() calls the Employee Bonus
             //without "base", we'd just call Manager.Bonus() recursively
-            return (base.Bonus() * 3); 
-        }
-    }
-
-
-
-    public class Guard : Employee
-    {
-        private string shift; // e.g., "Morning", "Evening", "Night"
-
-        // Constructor
-        public Guard(string name, DateTime startDate, int salary, string shift) : base(name, startDate, salary)
-        {
-            this.shift = shift;
-        }
-
-        // Overloaded constructor with default shift
-        public Guard(string name, string shift) : base(name)
-        {
-            this.shift = shift;
-        }
-
-        // Override Bonus method
-        public override int Bonus()
-        {
-            return 500; // Fixed bonus amount for guards
+            return (base.Bonus() * 3);
         }
 
         public override string ToString()
         {
-            return base.ToString() + $", Shift = {this.shift}";
+            //return base.ToString();
+            return base.ToString() + $", Title = {this.title}";
         }
+
+        public void Raise(int raise, string reason) //overload Raise()
+        {
+            this.salary += raise;
+            Console.WriteLine($"Granted {name} {raise} NIS raise for: {reason}");
+        }
+
+        public void Work(string project)
+        {
+            Console.WriteLine($"{name} is managing the {project} project.");
+        }
+
+        public void Quiz()
+        {
+            this.Work();
+            this.Work("Alpha");
+        }
+
     }
 
 
-    public class CEO : Manager
-    {
-        private int stockOptions; // New field specific to CEO
 
-        // Constructor with full initialization
-        public CEO(string name, DateTime startDate, int salary, string title, int stockOptions)
-            : base(name, startDate, salary, title)
-        {
-            this.stockOptions = stockOptions;
-        }
 
-        // Constructor with default values
-        public CEO() : base("Unknown CEO", DateTime.Now, 50000, "CEO")
-        {
-            this.stockOptions = 10000; // Default stock options
-        }
-
-        // Override the Bonus method
-        public override int Bonus()
-        {
-            // Base Bonus (from Manager) + stock options * 10
-            return base.Bonus() + (this.stockOptions * 10);
-        }
-
-        public override string ToString()
-        {
-            // Add stock options to the ToString method
-            return base.ToString() + $", Stock Options = {this.stockOptions}";
-        }
-    }
 
     class Company
     {
         private string name; //company name
         private Employee[] employees;
-        private CEO c;
+        private int employeeCount;
 
 
-        public Company(string name, CEO ceo, int maxEmployees)
+        public Company(string name, int maxEmployees)
         {
             this.name = name;
-            this.c = ceo;
             this.employees = new Employee[maxEmployees];
+            employeeCount = 0;
+        }
 
+
+        public bool AddEmployee(Employee emp)
+        {
+            if (employeeCount < employees.Length && emp != null)
+            {
+                employees[employeeCount] = emp;
+                employeeCount++;
+                return true;
+            }
+            return false;
         }
 
     }
