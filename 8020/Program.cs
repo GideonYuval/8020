@@ -45,6 +45,9 @@ namespace _8020
 
             c1.AddEmployee(e1);
             c2.AddEmployee(e2);
+
+            //note - c1.employeeCount can equal Employee.NumEmployee only if
+            //all employees created work in Company c1
         }
     }
 
